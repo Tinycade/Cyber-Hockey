@@ -38,7 +38,7 @@ function mouseMoveHandler(e) {
     var relativeY = e.clientY - canvas.offsetTop;
     if (relativeY > 0 && relativeY < canvas.height) {
       player.position.y = relativeY;
-      player.position.y = relativeY;
+      player2.position.y = relativeY;
     }
 }
 
