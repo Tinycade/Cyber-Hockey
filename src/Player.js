@@ -21,6 +21,7 @@ class PlayerController {
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.fwd.getAngle());
 
+        //draw green part
         ctx.beginPath();
         ctx.arc(0, 0, 50, 0, Math.PI, false);
         ctx.closePath();
@@ -30,6 +31,7 @@ class PlayerController {
         ctx.strokeStyle = '#550000';
         ctx.stroke();
 
+        //draw red part
         ctx.beginPath();
         ctx.rect(-50, -30, 100, 30);
         ctx.closePath();

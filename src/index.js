@@ -6,6 +6,8 @@ let gunMarkerNum = 2;
 //create game elements
 var player = new PlayerController(100, 100, 20, 10, 0, false);
 var player2 = new PlayerController(300, 100, 20, 10, 0, false);
+var wall = new Wall(new Vec2(100, 20), new Vec2(100, 400));
+
 const bullets = [];
 const enemies = [];
 const ball = new Ball(350, 200, 25);
@@ -112,7 +114,8 @@ function update() {
   //update for game elements
   enemies.forEach(e => e.move(dt))
   bullets.forEach(b => b.update(dt));
-  ball.update();
+  ball.update(dt);
+  wall.update(dt);
 
   // Filter out bullest
   for (let i = bullets.length - 1; i > -1; i--) {
@@ -128,14 +131,12 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  let player1 = document.getElementById('player');
-  //ctx.drawImage(player1, player.position.x - 30, player.position.y - 30, 60, 60);
   player.draw(ctx);
   player2.draw(ctx);
 
   drawLine();
   
-  //drawShield();
+  wall.draw(ctx);
   enemies.forEach(enemy => enemy.draw(ctx));
   ball.draw(ctx);
   bullets.forEach(b => b.draw(ctx));

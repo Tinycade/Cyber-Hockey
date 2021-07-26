@@ -1,5 +1,5 @@
 class Ball{
-    constructor(x,y,radius,collisionRadius) {
+    constructor(x,y,radius) {
         this.visible = true;
         this.x = x;
         this.y = y;
@@ -7,7 +7,6 @@ class Ball{
         this.radius = radius || 50;
         this.angle = Math.floor(Math.random() * 359);
         this.strokeColor = 'white';
-        this.collisionRadius = collisionRadius || 46;
     }
     update(dt){
         let radians = this.angle / Math.PI * 180;
