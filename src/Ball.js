@@ -1,15 +1,16 @@
 class Ball{
-    constructor(x,y,radius) {
+    constructor(x,y) {
         this.visible = true;
         this.x = x;
         this.y = y;
-        this.speed = 3;
-        this.radius = radius || 50;
-        this.angle = Math.floor(Math.random() * 359);
+        this.speed = 5;
+        this.radius = 25;
+        this.angle = Math.PI;// Math.floor(Math.random() * 359);
         this.strokeColor = 'white';
+        this.hasCollided = false;
     }
     update(dt){
-        let radians = this.angle / Math.PI * 180;
+        let radians = this.angle;//this.angle / Math.PI * 180;
         this.x += Math.cos(radians) * this.speed;
         this.y += Math.sin(radians) * this.speed;
 
@@ -27,16 +28,13 @@ class Ball{
         if (this.y > canvas.height) {
             this.y = this.radius;
         }
-
-        if(CircleCollision(this.x, this.y, this.radius, 
-            player.position.x, player.position.y, player.radius))
-            {
-                ctx.fillStyle = 'black';
-                ctx.font = '50px Arial';
-                ctx.fillText("GAME OVER", canvas.width / 2 - 150, canvas.height / 2);
-                console.log("collision");
-            }
     }
+
+    resetPosition(){
+        this.x = 250;
+        this.y = 175;
+    }
+
     draw(ctx){
         ctx.save();
         ctx.translate(this.x, this.y);

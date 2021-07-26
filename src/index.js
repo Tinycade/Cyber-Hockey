@@ -4,14 +4,9 @@ let playerMarkerNum = 1;
 let gunMarkerNum = 2;
 
 //create game elements
-var player = new PlayerController(100, 100, 20, 10, 0, false);
-var player2 = new PlayerController(300, 100, 20, 10, 0, false);
-var wall = new Wall(new Vec2(100, 20), new Vec2(100, 400));
-
-const bullets = [];
-const enemies = [];
-const ball = new Ball(350, 200, 25);
-const waypoints = Vec2[(50, 50), (50, 300), (400, 50), (400, 300)];
+var wall = new Wall(new Vec2(60, 70), new Vec2(90, 70), new Vec2(60, 220), new Vec2(90, 220));
+var wall2 = new Wall(new Vec2(660, 70), new Vec2(690, 70), new Vec2(660, 220), new Vec2(690, 220));
+const ball = new Ball(350, 175);
 
 
 //event listeners
@@ -27,6 +22,8 @@ function init() {
   canvas = document.getElementById("game-canvas");
   ctx = canvas.getContext("2d");
 
+  wall2.rotate(Math.PI);
+
   requestAnimationFrame(update);
 }
 
@@ -34,13 +31,16 @@ function init() {
 function mouseMoveHandler(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     if (relativeX > 0 && relativeX < canvas.width) {
-      player.position.x = relativeX;
-      player2.position.x = relativeX + 500;
+      //player.position.x = relativeX;
+      //player2.position.x = relativeX + 500;
+      //wall.point1.x = relativeX;
+
     }
     var relativeY = e.clientY - canvas.offsetTop;
     if (relativeY > 0 && relativeY < canvas.height) {
-      player.position.y = relativeY;
-      player2.position.y = relativeY;
+      //player.position.y = relativeY;
+      //player2.position.y = relativeY;
+      //wall.point1.y = relativeY; 
     }
 }
 
@@ -55,6 +55,32 @@ function keyDownHandler(e) {
   if (e.key == "k") {
     SpawnEnemy();
     //changeMode = !changeMode;
+  }
+
+  if (e.key == "q") {
+    wall.rotate(-.3);
+  }
+  if (e.key == "e") {
+    wall.rotate(.3);
+  }
+  if (e.key == "p") {
+    wall2.rotate(.3);
+  }
+  if (e.key == "i") {
+    wall2.rotate(-.3);
+  }
+
+  if (e.key == "w") {
+    wall.translate(new Vec2(0, 10));
+  }
+  if (e.key == "a") {
+    wall.translate(new Vec2(-10, 0));
+  }
+  if (e.key == "s") {
+    wall.translate(new Vec2(0, -10));
+  }
+  if (e.key == "d") {
+    wall.translate(new Vec2(10, 0));
   }
 }
 
@@ -106,21 +132,11 @@ function update() {
 
   //beholder marker variables
   Beholder.update();
-  let playerPosition = Beholder.getMarker(playerMarkerNum).center;
-  let playerRotation = Beholder.getMarker(playerMarkerNum).rotation;
-  let gunPosition = Beholder.getMarker(gunMarkerNum).center;
-  let gunRotation = Beholder.getMarker(gunMarkerNum).rotation;
 
   //update for game elements
-  enemies.forEach(e => e.move(dt))
-  bullets.forEach(b => b.update(dt));
   ball.update(dt);
   wall.update(dt);
-
-  // Filter out bullest
-  for (let i = bullets.length - 1; i > -1; i--) {
-    if (bullets[i].shouldRemove) bullets.splice(i, 1);
-  }
+  wall2.update(dt);
 
   // WE DRAW LAST DYLION
   draw();
@@ -131,28 +147,10 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  player.draw(ctx);
-  player2.draw(ctx);
-
   drawLine();
-  
   wall.draw(ctx);
-  enemies.forEach(enemy => enemy.draw(ctx));
+  wall2.draw(ctx);
   ball.draw(ctx);
-  bullets.forEach(b => b.draw(ctx));
 }
-
-function CircleCollision(posX, posY, rad, posX2, posY2, rad2)
-{
-  let radiusSum = rad + rad2;
-  let xDiff = posX - posX2;
-  let yDiff = posY - posY2;
-
-  if(radiusSum > Math.sqrt((xDiff * xDiff) + (yDiff * yDiff))){
-    return true;
-  } else return false ;
-}
-
-
 
 window.onload = init;
