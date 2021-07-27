@@ -4,7 +4,7 @@ class Ball{
         this.x = x;
         this.y = y;
         this.speed = 5;
-        this.radius = 25;
+        this.radius = 20;
         this.angle = Math.PI;// Math.floor(Math.random() * 359);
         this.strokeColor = 'white';
         this.hasCollided = false;

@@ -4,6 +4,7 @@ class Wall {
         this.point2 = p2;
         this.point3 = p3;
         this.point4 = p4;
+        this.currentAngle = 0;
         this.center = this.getMidpoint(this.point1, this.point4)
         this.updateLength(this.point1, this.point3);
         this.updateLength(this.point2, this.point4);
@@ -51,21 +52,42 @@ class Wall {
         return midpoint;
     }
 
-    rotate(value){
+    // rotate(value){
+
+    //     var v1 = Vec2.sub(this.center, this.point1);
+    //     var v2 = Vec2.sub(this.center, this.point2);
+    //     var v3 = Vec2.sub(this.center, this.point3);
+    //     var v4 = Vec2.sub(this.center, this.point4);
+
+    //     this.point1 = Vec2.rotate(v1, value).add(this.center);
+    //     this.point2 = Vec2.rotate(v2, value).add(this.center);
+    //     this.point3 = Vec2.rotate(v3, value).add(this.center);
+    //     this.point4 = Vec2.rotate(v4, value).add(this.center);
+    //     this.updateLength(this.point1, this.point3);
+    //     this.updateLength(this.point2, this.point4);
+    //     // this.center = this.getMidpoint();
+    // }
+
+    rotateTo(beholderAngle)
+    {
+        var rotationAmount = beholderAngle - this.currentAngle;
 
         var v1 = Vec2.sub(this.center, this.point1);
         var v2 = Vec2.sub(this.center, this.point2);
         var v3 = Vec2.sub(this.center, this.point3);
         var v4 = Vec2.sub(this.center, this.point4);
 
-        this.point1 = Vec2.rotate(v1, value).add(this.center);
-        this.point2 = Vec2.rotate(v2, value).add(this.center);
-        this.point3 = Vec2.rotate(v3, value).add(this.center);
-        this.point4 = Vec2.rotate(v4, value).add(this.center);
+        this.point1 = Vec2.rotate(v1, rotationAmount).add(this.center);
+        this.point2 = Vec2.rotate(v2, rotationAmount).add(this.center);
+        this.point3 = Vec2.rotate(v3, rotationAmount).add(this.center);
+        this.point4 = Vec2.rotate(v4, rotationAmount).add(this.center);
         this.updateLength(this.point1, this.point3);
         this.updateLength(this.point2, this.point4);
-        // this.center = this.getMidpoint();
+
+        this.currentAngle = beholderAngle;
     }
+
+
 
     translate(newDir){
         this.point1 += newDir;
@@ -80,13 +102,11 @@ class Wall {
         //console.log(ballPos);
         if(this.checkCircleCollision(ballPos, ball.radius, this.point1, this.point3) && ball.hasCollided == false)
         {
-            console.log('hit');
 
             //end game!
             ball.resetPosition();
         } else if(this.checkCircleCollision(ballPos, ball.radius, this.point2, this.point4) && ball.hasCollided == false)
         {
-            console.log('reflection');
             ball.hasCollided = true;
             setTimeout(() => {  ball.hasCollided = false; }, 75);
 
@@ -99,21 +119,21 @@ class Wall {
 
     draw(ctx) {
 
-
+        //goal
         ctx.beginPath();
-
         ctx.moveTo(this.point1.x, this.point1.y);
         ctx.lineTo(this.point3.x, this.point3.y);
-        ctx.strokeStyle = "red";
+        ctx.strokeStyle = "black";
         ctx.lineWidth = 5;
         ctx.stroke();
         ctx.closePath();
 
-        ctx.beginPath();
 
+        //reflector
+        ctx.beginPath();
         ctx.moveTo(this.point2.x, this.point2.y);
         ctx.lineTo(this.point4.x, this.point4.y);
-        ctx.strokeStyle = "#add8e6";
+        ctx.strokeStyle = "white";
         ctx.lineWidth = 5;
         ctx.stroke();
         ctx.closePath();
