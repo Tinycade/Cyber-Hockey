@@ -3,14 +3,14 @@ class Ball{
         this.visible = true;
         this.x = x;
         this.y = y;
-        this.speed = 5;
+        this.speed = 4;
         this.radius = 20;
         this.angle = Math.PI;// Math.floor(Math.random() * 359);
         this.strokeColor = 'white';
         this.hasCollided = false;
     }
     update(dt){
-        let radians = this.angle;//this.angle / Math.PI * 180;
+        let radians = this.angle;
         this.x += Math.cos(radians) * this.speed;
         this.y += Math.sin(radians) * this.speed;
 
@@ -31,8 +31,19 @@ class Ball{
     }
 
     resetPosition(){
-        this.x = 250;
-        this.y = 175;
+        this.x = canvas.width/2;
+        this.y = canvas.height/2;
+        this.speed = 4;
+        console.log(this.x);
+        //setTimeout(this.shootBall, 1000);
+    }
+
+    shootBall(){
+        
+        this.angle = Math.PI;
+        this.speed = 4;
+        console.log(this.x);
+        //console.log('speed is ' + speed);
     }
 
     draw(ctx){
