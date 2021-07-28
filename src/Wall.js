@@ -6,6 +6,12 @@ class Wall {
         this.point4 = p4;
         this.currentAngle = 0;
         this.center = this.getMidpoint(this.point1, this.point4)
+        this.pointOffsets = [
+            Vec2.sub(this.center, p1),
+            Vec2.sub(this.center, p2),
+            Vec2.sub(this.center, p3),
+            Vec2.sub(this.center, p4),
+        ]
         this.updateLength(this.point1, this.point3);
         this.updateLength(this.point2, this.point4);
     }
@@ -45,42 +51,30 @@ class Wall {
 
     rotateTo(beholderAngle)
     {
-        var rotationAmount = beholderAngle - this.currentAngle;
-
-        var v1 = Vec2.sub(this.center, this.point1);
-        var v2 = Vec2.sub(this.center, this.point2);
-        var v3 = Vec2.sub(this.center, this.point3);
-        var v4 = Vec2.sub(this.center, this.point4);
-
-        this.point1 = Vec2.rotate(v1, rotationAmount).add(this.center);
-        this.point2 = Vec2.rotate(v2, rotationAmount).add(this.center);
-        this.point3 = Vec2.rotate(v3, rotationAmount).add(this.center);
-        this.point4 = Vec2.rotate(v4, rotationAmount).add(this.center);
-        this.updateLength(this.point1, this.point3);
-        this.updateLength(this.point2, this.point4);
-
         this.currentAngle = beholderAngle;
     }
 
-
-
     translate(newPos){
+        this.center.add(newPos);
         this.point1 = Vec2.add(newPos, this.point1);// + offset1;
         this.point2 = Vec2.add(newPos, this.point2);// + offset2;
         this.point3 = Vec2.add(newPos, this.point3);// + offset3;
         this.point4 = Vec2.add(newPos, this.point4);
+
+        this.updateLength(this.point1, this.point3);
+        this.updateLength(this.point2, this.point4);
     }
 
     translateTo(newPos){
 
-        var totalOffset = Vec2.sub(newPos, this.center);
-        console.log(totalOffset);
+        this.center.copy(newPos);
+        this.point1 = Vec2.add(this.center, this.pointOffsets[0].clone().rotate(this.currentAngle));// + offset1;
+        this.point2 = Vec2.add(this.center, this.pointOffsets[1].clone().rotate(this.currentAngle));// + offset2;
+        this.point3 = Vec2.add(this.center, this.pointOffsets[2].clone().rotate(this.currentAngle));// + offset3;
+        this.point4 = Vec2.add(this.center, this.pointOffsets[3].clone().rotate(this.currentAngle));
 
-        this.point1 = Vec2.add(totalOffset, this.point1);// + offset1;
-        this.point2 = Vec2.add(totalOffset, this.point2);// + offset2;
-        this.point3 = Vec2.add(totalOffset, this.point3);// + offset3;
-        this.point4 = Vec2.add(totalOffset, this.point4);
-        this.center = newPos;
+        this.updateLength(this.point1, this.point3);
+        this.updateLength(this.point2, this.point4);
     }
 
     update(dt) {
@@ -97,7 +91,9 @@ class Wall {
         {
             ball.hasCollided = true;
             setTimeout(() => {  ball.hasCollided = false; }, 75);
-            ball.speed *= 1.1;
+            
+            
+            ball.speed = ball.speed > 30 ? ball.speed : ball.speed * 1.1;
 
             var fwd = Vec2.fromAngle(ball.angle);
             var newDir = this.getReflection(ballPos, fwd, this.point1);

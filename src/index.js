@@ -5,11 +5,18 @@ var wall = new Wall(new Vec2(60, 70), new Vec2(90, 70), new Vec2(60, 220), new V
 var wall2 = new Wall(new Vec2(660, 70), new Vec2(690, 70), new Vec2(660, 220), new Vec2(690, 220));
 const ball = new Ball(350, 175);
 
+function lerp(a,b, c, d, v) {
+  return c + (d - c) * (v - a) / (b - a); 
+}
+
 var markerAngle = 0;
 
 //event listeners
 document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("keydown", keyDownHandler, false);
+let playerMarkerNum1;
+let playerMarkerNum2;
+let referenceMarker;
 
 //init
 let hasStarted = false;
@@ -19,6 +26,10 @@ function init() {
 
   canvas = document.getElementById("game-canvas");
   ctx = canvas.getContext("2d");
+
+  playerMarkerNum1 = Beholder.getMarker(1);
+  playerMarkerNum2 = Beholder.getMarker(2);
+  referenceMarker = Beholder.getMarker(0);
 
   //rotate wall2 180 degrees
   wall2.rotateTo(Math.PI);
@@ -45,39 +56,61 @@ function mouseMoveHandler(e) {
 
 function keyDownHandler(e) {
   if (e.key == "q") {
-    markerAngle += .1;
+    markerAngle -= .1;
     wall.rotateTo(markerAngle);
   }
   if (e.key == "e") {
     markerAngle += .1;
+    wall.rotateTo(markerAngle);
+  }
+
+  if (e.key == "i") {
+    markerAngle -= .1;
+    wall2.rotateTo(markerAngle);
+  }
+  if (e.key == "p") {
+    markerAngle += .1;
     wall2.rotateTo(markerAngle);
   }
 
-  // if (e.key == "w") {
-  //   wall.translate(new Vec2(0, -50));
-  // }
-  // if (e.key == "a") {
-  //   wall.translate(new Vec2(-50, 0));
-  // }
-  // if (e.key == "s") {
-  //   wall.translate(new Vec2(0, 50));
-  // }
-  // if (e.key == "d") {
-  //   wall.translate(new Vec2(50, 0));
-  // }
-
   if (e.key == "w") {
-    wall.translateTo(new Vec2(100, 100));
+    wall.translate(new Vec2(0, -50));
   }
   if (e.key == "a") {
-    wall.translateTo(new Vec2(200, 200));
+    wall.translate(new Vec2(-50, 0));
   }
   if (e.key == "s") {
-    wall.translateTo(new Vec2(300, 300));
+    wall.translate(new Vec2(0, 50));
   }
   if (e.key == "d") {
-    wall.translateTo(new Vec2(50, 0));
+    wall.translate(new Vec2(50, 0));
   }
+
+  if (e.keyCode == '38') {
+    wall2.translate(new Vec2(0, -50));
+  }
+  if (e.keyCode == '37') {
+    wall2.translate(new Vec2(-50, 0));
+  }
+  if (e.keyCode == '40') {
+    wall2.translate(new Vec2(0, 50));
+  }
+  if (e.keyCode == '39') {
+    wall2.translate(new Vec2(50, 0));
+  }
+
+  // if (e.key == "w") {
+  //   wall.translateTo(new Vec2(100, 100));
+  // }
+  // if (e.key == "a") {
+  //   wall.translateTo(new Vec2(200, 200));
+  // }
+  // if (e.key == "s") {
+  //   wall.translateTo(new Vec2(300, 300));
+  // }
+  // if (e.key == "d") {
+  //   wall.translateTo(new Vec2(50, 0));
+  // }
 }
 
 function drawLine() {
@@ -98,15 +131,11 @@ function update() {
   Beholder.update();
 
   //get marker objects
-  let playerMarkerNum1 = Beholder.getMarker(1);
-  let playerMarkerNum2 = Beholder.getMarker(8);
-  let referenceMarker = Beholder.getMarker(7);
+  // if(!playerMarkerNum1.present) console.log('missing 1');
+  // if(!playerMarkerNum2.present) console.log('missing 2');
+  // if(!referenceMarker.present) console.log('missing ref');
 
-  //check for markers
-  // if(!playerMarkerNum1.present || !playerMarkerNum2.present || !referenceMarker.present){
-  //   console.error("Missing a marker!");
-  //   return;
-  // }
+
 
   //time stuff
   let currentTime = Date.now();
@@ -114,8 +143,20 @@ function update() {
   prevTime = currentTime;
 
   //marker rotate code
-  //wall.rotateTo(playerMarkerNum1.rotation);
-  //wall2.rotateTo(playerMarkerNum2.rotation);
+  
+  // console.log(playerMarkerNum2.center.y);
+  wall.rotateTo(playerMarkerNum1.rotation - Math.PI / 2);
+  wall.translateTo(new Vec2(
+    lerp(158, 222, 0, 380, playerMarkerNum1.center.x),
+    lerp(108, 76, 50, 300, playerMarkerNum1.center.y),
+  ));
+
+  wall2.rotateTo(playerMarkerNum2.rotation);
+  wall2.translateTo(new Vec2(
+    lerp(250, 310, 420, 800, playerMarkerNum2.center.x),
+    lerp(108, 68, 50, 320, playerMarkerNum2.center.y),
+  ));
+  //wall.translateTo(new Vec2(75, 150));
 
   //get marker positions
   var refPos = new Vec2(referenceMarker.center);
