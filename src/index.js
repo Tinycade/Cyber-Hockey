@@ -7,7 +7,6 @@ const ball = new Ball(350, 175);
 
 var markerAngle = 0;
 
-
 //event listeners
 document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("keydown", keyDownHandler, false);
@@ -21,6 +20,7 @@ function init() {
   canvas = document.getElementById("game-canvas");
   ctx = canvas.getContext("2d");
 
+  //rotate wall2 180 degrees
   wall2.rotateTo(Math.PI);
 
   requestAnimationFrame(update);
@@ -53,40 +53,31 @@ function keyDownHandler(e) {
     wall2.rotateTo(markerAngle);
   }
 
-
+  // if (e.key == "w") {
+  //   wall.translate(new Vec2(0, -50));
+  // }
+  // if (e.key == "a") {
+  //   wall.translate(new Vec2(-50, 0));
+  // }
+  // if (e.key == "s") {
+  //   wall.translate(new Vec2(0, 50));
+  // }
+  // if (e.key == "d") {
+  //   wall.translate(new Vec2(50, 0));
+  // }
 
   if (e.key == "w") {
-    wall.translate(new Vec2(0, 10));
+    wall.translateTo(new Vec2(100, 100));
   }
   if (e.key == "a") {
-    wall.translate(new Vec2(-10, 0));
+    wall.translateTo(new Vec2(200, 200));
   }
   if (e.key == "s") {
-    wall.translate(new Vec2(0, -10));
+    wall.translateTo(new Vec2(300, 300));
   }
   if (e.key == "d") {
-    wall.translate(new Vec2(10, 0));
+    wall.translateTo(new Vec2(50, 0));
   }
-}
-
-// function LimitDistance(alphaX, aplhaY, betaX, betaY)
-// {
-//   var maxDistance = 50;
-//   if()
-// }
-
-function SpawnEnemy() {
-  enemies.push(
-    new Enemy(
-      150,
-      150,
-      20, //radius
-      1, //speed
-      0,
-      0
-      //Math.floor(Math.random() * waypoints.length)
-    )
-  );
 }
 
 function drawLine() {
@@ -103,41 +94,40 @@ let prevTime = Date.now();
 
 function update() {
 
-  //checks if both markers are active
-// if(!Beholder.getMarker(playerMarkerNum11).present ||
-//   !Beholder.getMarker(playerMarkerNum2).present) {
-//    console.log("Player or gun not present") 
-//     return;
-//   }
+  //beholder update
+  Beholder.update();
+
+  //get marker objects
+  let playerMarkerNum1 = Beholder.getMarker(1);
+  let playerMarkerNum2 = Beholder.getMarker(8);
+  let referenceMarker = Beholder.getMarker(7);
+
+  //check for markers
+  // if(!playerMarkerNum1.present || !playerMarkerNum2.present || !referenceMarker.present){
+  //   console.error("Missing a marker!");
+  //   return;
+  // }
 
   //time stuff
   let currentTime = Date.now();
   let dt = currentTime - prevTime;
   prevTime = currentTime;
 
-  //beholder marker variables
-  Beholder.update();
+  //marker rotate code
+  //wall.rotateTo(playerMarkerNum1.rotation);
+  //wall2.rotateTo(playerMarkerNum2.rotation);
 
-  let playerMarkerNum1 = Beholder.getMarker(1);
-  let playerMarkerNum2 = Beholder.getMarker(8);
-  let referenceMarker = Beholder.getMarker(7);
-
-  if(playerMarkerNum1.present)
-  {
-    wall.rotateTo(playerMarkerNum1.rotation());
-  }
-
-  if(playerMarkerNum2.present)
-  {
-    wall2.rotateTo(playerMarkerNum2.rotation());
-  }
+  //get marker positions
+  var refPos = new Vec2(referenceMarker.center);
+  var p1Pos = new Vec2(playerMarkerNum1.center);
+  var p2Pos = new Vec2(playerMarkerNum2.center);
 
   //update for game elements
   ball.update(dt);
   wall.update(dt);
   wall2.update(dt);
 
-  // WE DRAW LAST DYLION
+  //drawing
   draw();
 
   requestAnimationFrame(update);
@@ -146,8 +136,9 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-
+  ctx.lineCap = "round";
   drawLine();
+
   wall.draw(ctx);
   wall2.draw(ctx);
   ball.draw(ctx);

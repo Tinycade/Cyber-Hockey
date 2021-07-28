@@ -64,23 +64,23 @@ class Wall {
 
 
 
-    translate(newDir){
-        this.point1 += newDir;
-        this.point2 += newDir;
-        this.point3 += newDir;
-        this.point4 += newDir;
+    translate(newPos){
+        this.point1 = Vec2.add(newPos, this.point1);// + offset1;
+        this.point2 = Vec2.add(newPos, this.point2);// + offset2;
+        this.point3 = Vec2.add(newPos, this.point3);// + offset3;
+        this.point4 = Vec2.add(newPos, this.point4);
     }
 
     translateTo(newPos){
-        var offset1 = Vec2.sub(this.center, this.point1);
-        var offset2 = Vec2.sub(this.center, this.point2);
-        var offset3 = Vec2.sub(this.center, this.point3);
-        var offset4 = Vec2.sub(this.center, this.point4);
 
-        this.point1 = newPos + offset1;
-        this.point2 = newPos + offset2;
-        this.point3 = newPos + offset3;
-        this.point4 = newPos + offset4;
+        var totalOffset = Vec2.sub(newPos, this.center);
+        console.log(totalOffset);
+
+        this.point1 = Vec2.add(totalOffset, this.point1);// + offset1;
+        this.point2 = Vec2.add(totalOffset, this.point2);// + offset2;
+        this.point3 = Vec2.add(totalOffset, this.point3);// + offset3;
+        this.point4 = Vec2.add(totalOffset, this.point4);
+        this.center = newPos;
     }
 
     update(dt) {
