@@ -9,14 +9,6 @@ class Wall {
         this.updateLength(this.point1, this.point3);
         this.updateLength(this.point2, this.point4);
     }
-    // setStart(p) {
-    //     this.point1 = p;
-    //     this.updateLength();
-    // }
-    // setEnd(p) {
-    //     this.point2 = p;
-    //     this.updateLength();
-    // }
     updateLength(p1, p2) {
         this.axis = Vec2.sub(p1, p2);
         this.length = p1.dist(p2);
@@ -27,7 +19,6 @@ class Wall {
         const proj = this.axis.dot(circleVec) / this.axis.mag();
         const closestPoint = this.axis.clone().normalize().scale(proj);
         const normal = Vec2.sub(circleVec, closestPoint).normalize();
-        // reflection = fwd - 2(fwd . n)n
         return Vec2.sub(Vec2.scale(normal, 2 * fwd.dot(normal)), fwd);
     }
     // just the center and radius
@@ -51,22 +42,6 @@ class Wall {
         var midpoint = new Vec2(newX, newY);
         return midpoint;
     }
-
-    // rotate(value){
-
-    //     var v1 = Vec2.sub(this.center, this.point1);
-    //     var v2 = Vec2.sub(this.center, this.point2);
-    //     var v3 = Vec2.sub(this.center, this.point3);
-    //     var v4 = Vec2.sub(this.center, this.point4);
-
-    //     this.point1 = Vec2.rotate(v1, value).add(this.center);
-    //     this.point2 = Vec2.rotate(v2, value).add(this.center);
-    //     this.point3 = Vec2.rotate(v3, value).add(this.center);
-    //     this.point4 = Vec2.rotate(v4, value).add(this.center);
-    //     this.updateLength(this.point1, this.point3);
-    //     this.updateLength(this.point2, this.point4);
-    //     // this.center = this.getMidpoint();
-    // }
 
     rotateTo(beholderAngle)
     {
@@ -96,19 +71,33 @@ class Wall {
         this.point4 += newDir;
     }
 
+    translateTo(newPos){
+        var offset1 = Vec2.sub(this.center, this.point1);
+        var offset2 = Vec2.sub(this.center, this.point2);
+        var offset3 = Vec2.sub(this.center, this.point3);
+        var offset4 = Vec2.sub(this.center, this.point4);
+
+        this.point1 = newPos + offset1;
+        this.point2 = newPos + offset2;
+        this.point3 = newPos + offset3;
+        this.point4 = newPos + offset4;
+    }
+
     update(dt) {
 
         var ballPos = new Vec2(ball.x, ball.y);
-        //console.log(ballPos);
+        
+        //if a goal is scored
         if(this.checkCircleCollision(ballPos, ball.radius, this.point1, this.point3) && ball.hasCollided == false)
         {
-
-            //end game!
             ball.resetPosition();
-        } else if(this.checkCircleCollision(ballPos, ball.radius, this.point2, this.point4) && ball.hasCollided == false)
+        }
+        //else if it hits paddle
+        else if(this.checkCircleCollision(ballPos, ball.radius, this.point2, this.point4) && ball.hasCollided == false)
         {
             ball.hasCollided = true;
             setTimeout(() => {  ball.hasCollided = false; }, 75);
+            ball.speed *= 1.1;
 
             var fwd = Vec2.fromAngle(ball.angle);
             var newDir = this.getReflection(ballPos, fwd, this.point1);
@@ -124,17 +113,16 @@ class Wall {
         ctx.moveTo(this.point1.x, this.point1.y);
         ctx.lineTo(this.point3.x, this.point3.y);
         ctx.strokeStyle = "black";
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 23;
         ctx.stroke();
         ctx.closePath();
-
 
         //reflector
         ctx.beginPath();
         ctx.moveTo(this.point2.x, this.point2.y);
         ctx.lineTo(this.point4.x, this.point4.y);
         ctx.strokeStyle = "white";
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 23;
         ctx.stroke();
         ctx.closePath();
 
