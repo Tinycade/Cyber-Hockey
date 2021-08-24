@@ -155,9 +155,13 @@ function drawSquares()
 
 function CheckMarkerLocations()
 {
-  if(Math.abs(wall.center.x - (canvas.width * 0.05 + 30)) < 10)
+  var Xdiff = wall.center.x - (canvas.width * 0.05 + 30);
+  var Ydiff = wall.center.y - (canvas.height / 2);
+  var dist = Math.sqrt(Xdiff*Xdiff + Ydiff*Ydiff)
+
+  if(dist < 10)
   {
-    player1score = 4;
+    player1score = 2;
   }
   else player1score = 0;
 }
