@@ -139,15 +139,15 @@ function drawText()
   ctx.fillText("Move your paddles onto the red squares to start", canvas.width / 2, (canvas.height / 2) + 30);
 
   ctx.font = '30px serif';
-  ctx.fillText(player1score, canvas.width / 2 + 30, 40);
-  ctx.fillText(player2score, canvas.width / 2 - 30, 40);
+  ctx.fillText(player1score, canvas.width / 2 - 30, 40);
+  ctx.fillText(player2score, canvas.width / 2 + 30, 40);
 }
 
 function drawSquares()
 {
   ctx.beginPath();
-  ctx.rect(canvas.width * 0.05, (canvas.height / 2) - 100, 75, 200);
-  ctx.rect(canvas.width * 0.85, (canvas.height / 2) - 100, 75, 200);
+  ctx.rect(canvas.width * 0.1, (canvas.height / 2) - 100, 75, 200);
+  ctx.rect(canvas.width * 0.8, (canvas.height / 2) - 100, 75, 200);
   ctx.fillStyle = "red";
   ctx.fill();
   ctx.closePath();
@@ -155,15 +155,24 @@ function drawSquares()
 
 function CheckMarkerLocations()
 {
-  var Xdiff = wall.center.x - (canvas.width * 0.05 + 30);
+  var Xdiff = wall.center.x - (canvas.width * 0.1 + 30);
   var Ydiff = wall.center.y - (canvas.height / 2);
   var dist = Math.sqrt(Xdiff*Xdiff + Ydiff*Ydiff)
 
-  if(dist < 10)
+  var Xdiff2 = wall2.center.x - (canvas.width * 0.8 + 30);
+  var Ydiff2 = wall2.center.y - (canvas.height / 2);
+  var dist2 = Math.sqrt(Xdiff*Xdiff + Ydiff*Ydiff)
+
+  if(dist < 10 && dist2 < 10)
   {
-    player1score = 2;
+    ctx.fillStyle = "green";
+    return true;
   }
-  else player1score = 0;
+  else
+  {
+    ctx.fillStyle = "red";
+    return false;
+  }
 }
 
 let prevTime = Date.now();
