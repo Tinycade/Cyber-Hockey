@@ -5,6 +5,9 @@ var wall = new Wall(new Vec2(60, 70), new Vec2(90, 70), new Vec2(60, 220), new V
 var wall2 = new Wall(new Vec2(660, 70), new Vec2(690, 70), new Vec2(660, 220), new Vec2(690, 220));
 const ball = new Ball(350, 175);
 
+//0 = start, 1 = playing
+var gamestate = 0;
+
 function lerp(a,b, c, d, v) {
   return c + (d - c) * (v - a) / (b - a); 
 }
@@ -18,6 +21,9 @@ let playerMarkerNum1;
 let playerMarkerNum2;
 let referenceMarker;
 
+let player1score = 0;
+let player2score = 0;
+
 //init
 let hasStarted = false;
 function init() {
@@ -26,6 +32,7 @@ function init() {
 
   canvas = document.getElementById("game-canvas");
   ctx = canvas.getContext("2d");
+  ctx.textAlign = "center";
 
   playerMarkerNum1 = Beholder.getMarker(1);
   playerMarkerNum2 = Beholder.getMarker(2);
@@ -123,6 +130,37 @@ function drawLine() {
   ctx.closePath();
 }
 
+function drawText()
+{
+  ctx.font = '35px serif';
+  ctx.fillText("Cyber-Hockey", canvas.width / 2, canvas.height / 2);
+
+  ctx.font = '25px serif';
+  ctx.fillText("Move your paddles onto the red squares to start", canvas.width / 2, (canvas.height / 2) + 30);
+
+  ctx.font = '30px serif';
+  ctx.fillText(player1score, canvas.width / 2 + 30, 40);
+  ctx.fillText(player2score, canvas.width / 2 - 30, 40);
+}
+
+function drawSquares()
+{
+  ctx.beginPath();
+  ctx.rect(canvas.width * 0.05, (canvas.height / 2) - 100, 75, 200);
+  ctx.rect(canvas.width * 0.85, (canvas.height / 2) - 100, 75, 200);
+  ctx.fillStyle = "red";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function CheckMarkerLocations()
+{
+  if((wall.center.x - canvas.width * 0.05) < 20)
+  {
+    player1score = 4;
+  }
+}
+
 let prevTime = Date.now();
 
 function update() {
@@ -135,6 +173,20 @@ function update() {
   // if(!playerMarkerNum2.present) console.log('missing 2');
   // if(!referenceMarker.present) console.log('missing ref');
 
+  if(gamestate == 0)
+  {
+    if(CheckMarkerLocations() == true)
+    {
+      gamestate = 1;
+    }
+    //if markers are in right location
+    //change gamestate to 1
+  }
+  else if (gamestate == 1)
+  {
+     //delete text and squares
+     //let ball update
+  }
 
 
   //time stuff
@@ -164,7 +216,11 @@ function update() {
   var p2Pos = new Vec2(playerMarkerNum2.center);
 
   //update for game elements
-  ball.update(dt);
+
+  if(gamestate == 1)
+  {
+    ball.update(dt);
+  }
   wall.update(dt);
   wall2.update(dt);
 
@@ -179,10 +235,15 @@ function draw() {
   
   ctx.lineCap = "round";
   drawLine();
+  drawText();
+  drawSquares();
 
   wall.draw(ctx);
   wall2.draw(ctx);
-  ball.draw(ctx);
+  if(gamestate == 1)
+  {
+    ball.draw(ctx);
+  }
 }
 
 window.onload = init;
