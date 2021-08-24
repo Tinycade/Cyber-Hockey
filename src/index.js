@@ -155,7 +155,7 @@ function drawSquares()
 
 function CheckMarkerLocations()
 {
-  if((wall.center.x - canvas.width * 0.05) < 20)
+  if(Math.abs(wall.center.x - (canvas.width * 0.05 + 30)) < 20)
   {
     player1score = 4;
   }
