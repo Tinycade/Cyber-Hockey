@@ -155,10 +155,11 @@ function drawSquares()
 
 function CheckMarkerLocations()
 {
-  if(Math.abs(wall.center.x - (canvas.width * 0.05 + 30)) < 20)
+  if(Math.abs(wall.center.x - (canvas.width * 0.05 + 30)) < 10)
   {
     player1score = 4;
   }
+  else player1score = 0;
 }
 
 let prevTime = Date.now();
