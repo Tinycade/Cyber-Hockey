@@ -1,0 +1,27 @@
+{
+  "name": "cyber-hockey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --outDir build",
+    "build:watch": "tsc --outDir build -w",
+    "start": "http-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tinycade/Cyber-Hockey.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tinycade/Cyber-Hockey/issues"
+  },
+  "homepage": "https://github.com/Tinycade/Cyber-Hockey#readme",
+  "dependencies": {
+    "http-server": "^13.0.1",
+    "pixi": "^0.3.1",
+    "typescript": "^4.4.2"
+  }
+}
