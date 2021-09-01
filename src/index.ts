@@ -1,3 +1,5 @@
-import { obj } from './module.js'
+import { obj } from './module'
+import { run } from './pixi_test';
 
-console.log(obj.name)
+console.log(obj.name);
+window.onload = run;
