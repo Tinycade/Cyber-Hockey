@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Vec2 from './Utils/Vec2';
 import { GameObject } from './Utils/GenericTypes';
+import Paddle from './Paddle';
  
 class Ball implements GameObject {
   body: PIXI.Sprite;
@@ -9,17 +10,19 @@ class Ball implements GameObject {
   radius: number;
   forward: Vec2;
   speed: number;
+  canCollide: boolean;
   
   appRef: PIXI.Application;
   
   constructor(x: number, y: number, appRef: PIXI.Application) {
     this.position = new Vec2(x, y);
-    this.radius = 30;
+    this.radius = 33;
     this.forward = new Vec2(-1, -1);
     this.forward.normalize();
     this.speed = 2;
     this.body = PIXI.Sprite.from('Assets/Ball_Sprite.png');
     this.body.anchor.set(0.5);
+    this.canCollide = true;
 
     this.appRef = appRef;
 
@@ -31,6 +34,26 @@ class Ball implements GameObject {
     // sync up things
     this.body.x = this.position.x;
     this.body.y = this.position.y;
+  }
+
+  reflect(paddle: Paddle) {
+    this.canCollide = false;
+
+    const circleVec = Vec2.sub(this.position, paddle.capA);
+    const proj = paddle.axis.dot(circleVec) / paddle.length;
+    const closestPoint = paddle.axis.clone().normalize().scale(proj);
+    const normal = Vec2.sub(circleVec, closestPoint).normalize();
+
+    const dot = this.forward.dot(normal);
+    this.forward.set(
+      this.forward.x - 2 * dot * normal.x,
+      this.forward.y - 2 * dot * normal.y
+    );
+    this.forward.normalize()
+  }
+
+  resetCollision() {
+    this.canCollide = true;
   }
 
   update(dt: number) {
@@ -53,7 +76,7 @@ class Ball implements GameObject {
     }
 
     this.syncPositions();
-  } 
+  }
 }
 
 export default Ball;

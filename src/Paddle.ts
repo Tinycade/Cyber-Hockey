@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Vec2 from './Utils/Vec2';
 import { GameObject } from './Utils/GenericTypes';
+import Ball from './Ball';
 
 class Paddle implements GameObject {
   body: PIXI.Sprite;
@@ -9,21 +10,27 @@ class Paddle implements GameObject {
   position: Vec2;
   pointA: Vec2;
   pointB: Vec2;
+  capA: Vec2;
+  capB: Vec2;
+  axis: Vec2;
   // marker: any;
   rotation: number;
+  length: number;
+  lengthSq: number;
 
   constructor(x: number, y: number) {
     this.position = new Vec2(x, y);
     this.pointA = new Vec2(0, 110);
     this.pointB = new Vec2(0, -110);
-    this.rotation = 0.25;
+    this.capA = new Vec2(this.position.x, this.position.y);
+    this.capB = new Vec2(this.position.x, this.position.y);
+    this.axis = new Vec2(0, 0);
+    this.rotation = 1;
+    this.length = 220;
+    this.lengthSq = this.length * this.length;
 
     this.body = PIXI.Sprite.from('Assets/Paddle_Sprite.png');
     this.body.anchor.set(0.5);
-    // this.pointABody = PIXI.Sprite.from('Assets/Debug/Circle.png');
-    // this.pointABody.anchor.set(0.5);
-    // this.pointBBody = PIXI.Sprite.from('Assets/Debug/Circle.png');
-    // this.pointBBody.anchor.set(0.5);
 
     this.syncPositions();
   }
@@ -36,11 +43,25 @@ class Paddle implements GameObject {
     this.pointA.setFromAngle(this.rotation + Math.PI / 2);
     this.pointB.set(-this.pointA.x, -this.pointA.y);
 
-    // debug bodies
-    // this.pointABody.x = this.pointA.x + this.position.x;
-    // this.pointABody.y = this.pointA.y + this.position.y;
-    // this.pointBBody.x = this.pointB.x + this.position.x;
-    // this.pointBBody.y = this.pointB.y + this.position.y;
+    this.capA.set(this.pointA.x + this.position.x, this.pointA.y + this.position.y);
+    this.capB.set(this.pointB.x + this.position.x, this.pointB.y + this.position.y);
+
+    this.axis.set(this.capA.x - this.capB.x, this.capA.y - this.capB.y);
+  }
+
+  checkBallCollision(ball: Ball) {
+    const rSq = ball.radius * ball.radius;
+    // Makes sure it's not off the point2 of the segment
+    if (this.capA.dist2(ball.position) < rSq + this.lengthSq &&
+      this.capB.dist2(ball.position) < rSq + this.lengthSq) {
+        // If the circle is close enough to the line to collide
+        const circleVec = Vec2.sub(this.capA, ball.position);
+        const proj = this.axis.dot(circleVec) / this.axis.mag();
+        const closestPoint = this.axis.clone().normalize().scale(proj);
+        if (closestPoint.dist2(circleVec) < rSq) return true;
+    }
+    // Otherwise no
+    return false;
   }
 
   update(dt: number) {

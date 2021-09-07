@@ -1,5 +1,3 @@
-import { NumberLiteralType } from "typescript";
-
 class Vec2 {
   x: number;
   y: number;
@@ -41,6 +39,13 @@ class Vec2 {
     return this;
   }
 
+  static sub(v1: Vec2, v2: Vec2) {
+    return new Vec2(
+      v1.x - v2.x,
+      v1.y - v2.y
+    );
+  }
+
   sub(v: Vec2): Vec2 {
     this.x -= v.x;
     this.y -= v.y;
@@ -53,6 +58,10 @@ class Vec2 {
     this.y -= v.y * s;
 
     return this;
+  }
+
+  static scale(v: Vec2, s: number): Vec2 {
+    return new Vec2(v.x * s, v.y * s);
   }
 
   scale(s: number): Vec2 {
@@ -103,6 +112,14 @@ class Vec2 {
 
   dot(v: Vec2): number {
     return (this.x * v.x) + (this.y * v.y);
+  }
+
+  dist(v: Vec2): number {
+    return Vec2.sub(this, v).mag();
+  }
+
+  dist2(v: Vec2): number {
+    return Vec2.sub(this, v).magSq();
   }
 }
 
