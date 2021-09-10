@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Tinycade/Cyber-Hockey#readme",
   "dependencies": {
+    "beholder-detection": "^1.1.13",
     "http-server": "^13.0.1",
     "pixi.js": "^6.0.4",
     "ramda": "^0.27.1",
